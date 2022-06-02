@@ -1,0 +1,80 @@
+Install packages
+```{r}
+install.packages("tidyverse")
+```
+Load packages
+```{r}
+library("tidyverse")
+```
+Importing dataset
+```{r}
+Data <- read.csv("Data.csv")
+```
+Splitting data by treatment 
+```{r}
+Data.0tsp <- Data[c(1,2,9,10,17,18),]
+Data.0.5tsp <- Data[c(3,4,11,12,19,20),]
+Data.1tsp <- Data[c(5,6,13,14,21,22),]
+Data.1.5tsp <- Data[c(7,8,15,16,23,24),]
+```
+Interactive Model
+```{r}
+fertlm <- lm(nitrate~Time*Fertilizer, data = Data)
+summary(fertlm)
+```
+Finding & plotting linear regression for 0 tsp/control
+```{r}
+trt.0.lm <- lm(nitrate ~ Time, data = Data.0tsp)
+summary(trt.0.lm)
+
+Data.0tsp.nitrate.Time <- ggplot(data = Data.0tsp, aes(x = Time, y = nitrate)) + geom_point() + geom_smooth(method = "lm")  
+Data.0tsp.nitrate.Time <- Data.0tsp.nitrate.Time + xlab("Time (days)") + ylab("nitrate (ppm)")
+Data.0tsp.nitrate.Time
+```
+Finding & plotting linear regression for 0.5 tsp/control
+```{r}
+trt.0.5.lm <- lm(nitrate ~ Time, data = Data.0.5tsp)
+summary(trt.0.5.lm)
+
+Data.0.5tsp.nitrate.Time <- ggplot(data = Data.0.5tsp, aes(x = Time, y = nitrate)) + geom_point() + geom_smooth(method = "lm")
+Data.0.5tsp.nitrate.Time <- Data.0.5tsp.nitrate.Time + xlab("Time (days)") + ylab("nitrate (ppm)")
+Data.0.5tsp.nitrate.Time
+```
+Finding & plotting linear regression for 1 tsp/control
+```{r}
+trt.1.lm <- lm(nitrate ~ Time, data = Data.1tsp)
+summary(trt.1.lm)
+
+Data.1tsp.nitrate.Time <- ggplot(data = Data.1tsp, aes(x = Time, y = nitrate)) + geom_point() + geom_smooth(method = "lm")
+Data.1tsp.nitrate.Time <- Data.1tsp.nitrate.Time + xlab("Time (days)") + ylab("nitrate (ppm)")
+Data.1tsp.nitrate.Time
+```
+Finding & plotting linear regression for 1.5 tsp/control
+```{r}
+trt.1.5.lm <- lm(nitrate ~ Time, data = Data.1.5tsp)
+summary(trt.1.5.lm)
+
+Data.1.5tsp.nitrate.Time <- ggplot(data = Data.1.5tsp, aes(x = Time, y = nitrate)) + geom_point() + geom_smooth(method = "lm")
+Data.1.5tsp.nitrate.Time <- Data.1.5tsp.nitrate.Time + xlab("Time (days)") + ylab("nitrate (ppm)")
+Data.1.5tsp.nitrate.Time
+```
+Changing Fertilizer to a factor 
+```{r}
+Data.Treatment <- Data[, "Fertilizer"]
+Data.Treatment.factor <- as.factor(Data.Treatment)
+Data.minus <- Data[,-c(5)]
+Data.minus$Treatment <- Data.Treatment.factor
+```
+Plotting the different treatments/ multiple regression line
+```{r}
+Data.fin <- ggplot(data = Data.minus, aes(x = Time, y = nitrate, group = Treatment, color = Treatment)) + geom_point() + geom_smooth(method = "lm") 
+Data.fin <- Data.fin + xlab("Time (days)") + ylab("Nitrate (ppm)") + ggtitle("Effect of Fertilizer on Nitrate Levels Over Time")
+Data.fin
+```
+Plotting mult line graph
+```{r}
+Data.fin <- ggplot(data = Data.minus, mapping = aes(x = Time, y = nitrate, group = Treatment, color = Treatment)) + geom_line() 
+Data.fin <- Data.fin + xlab("Time (days)") + ylab("Nitrate (ppm)") + ggtitle("Effect of Fertilizer on Nitrate Over Time") + scale_fill_discrete(name = "Treatment(tsp)") 
+Data.fin
+
+```
